@@ -1,9 +1,7 @@
 const express = require('express');
 const http = require('http');
 const path = require('path');
-const socketIO = require('socket.io');
 const { createCanvas, loadImage } = require('canvas');
-const { match } = require('assert');
 const app = express();
 const server = http.createServer(app);
 const { Server } = require("socket.io");
