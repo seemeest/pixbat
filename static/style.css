@@ -1,0 +1,126 @@
+img {
+    cursor: pointer;
+}
+
+.white {
+    background-color: #FFFFFF;
+}
+
+.grey1 {
+    background-color: #C2C2C2;
+}
+
+.grey2 {
+    background-color: #858585;
+}
+
+.black1 {
+    background-color: #474747;
+}
+
+.black2 {
+    background-color: #000000;
+}
+
+.green1 {
+    background-color: #94DF44;
+}
+
+.green2 {
+    background-color: #4BB34B;
+}
+
+.green3 {
+    background-color: #006600;
+    /* ....7.... */
+}
+
+.yelow1 {
+    background-color: #FDCA5E;
+}
+
+.yelow2 {
+    background-color: #EA621F;
+    /* .....9... */
+}
+
+.yelow3 {
+    background-color: #F18E1C;
+    /* ....10.... */
+}
+
+.red1 {
+    background-color: #FF6C6C;
+}
+
+.red2 {
+    background-color: #FF2121;
+}
+
+.red3 {
+    background-color: #D32121;
+}
+
+.violet1 {
+    background-color: #CD3EE6;
+}
+
+.violet2 {
+    background-color: #A329B8;
+}
+
+.blue1 {
+    background-color: #A1F0FF;
+}
+
+.blue2 {
+    background-color: #00C9FF;
+    /* 17 */
+}
+
+.blue3 {
+    background-color: #0080FF;
+    /* 18 */
+}
+
+.color {
+    width: 2vw;
+    height: 4vh;
+}
+
+#colors {
+    position: fixed;
+    display: flex;
+    flex-wrap: wrap;
+    width: 4vw;
+    visibility: hidden;
+}
+
+.menu {
+    background-image: url("img/109727.png");
+    background-size: cover;
+    visibility: visible;
+}
+
+body {
+    background-color: #474747;
+}
+
+img {
+    background: #fff;
+    object-fit: cover;
+    cursor: crosshair;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
+body {
+    background: grey;
+    margin: 0;
+    padding: 0;
+}
+
+#canvas {
+    background: #fff;
+}

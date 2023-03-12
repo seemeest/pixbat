@@ -1,0 +1,53 @@
+<html>
+
+<head>
+    <title>Pixel Battle</title>
+    <style>
+
+    </style>
+    <script src="/socket.io/socket.io.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+
+</head>
+
+<body>
+    <form class="exit" method="post" action="/api/auth/exit">
+        <input type="submit" value="Debug exit">
+    </form>
+
+    <div id="colors">
+        <div class="color menu" onclick="Write()"> </div>
+
+        <div class="color white" onclick="Colorwhite(); Hidden()"> </div>
+        <div class="color grey1" onclick="Colorgrey1(); Hidden()"> </div>
+        <div class="color grey2" onclick="Colorgrey2(); Hidden()"> </div>
+
+        <div class="color black1" onclick="Colorblack1(); Hidden()"> </div>
+        <div class="color black2" onclick="Colorblack2(); Hidden()"> </div>
+
+        <div class=" color green1" onclick="Colorgreen1(); Hidden()"> </div>
+        <div class=" color green2" onclick="Colorgreen2(); Hidden()"> </div>
+        <div class=" color green3" onclick="Colorgreen3(); Hidden()"> </div>
+
+        <div class="color yelow1" onclick="Coloryelow1(); Hidden()"> </div>
+        <div class="color yelow2" onclick="Coloryelow2(); Hidden()"> </div>
+        <div class="color yelow3" onclick="Coloryelow3(); Hidden()"> </div>
+
+        <div class="color red1" onclick="Colorred1(); Hidden()"> </div>
+        <div class="color red2" onclick="Colorred2(); Hidden()"> </div>
+        <div class="color red3" onclick="Colorred3(); Hidden()"> </div>
+
+        <div class="color violet1" onclick="Colorviolet1(); Hidden()"> </div>
+        <div class="color violet2" onclick="Colorviolet2(); Hidden()"> </div>
+
+        <div class="color blue1" onclick="Colorblue1(); Hidden()"> </div>
+        <div class="color blue2" onclick="Colorblue2(); Hidden()"> </div>
+        <div class="color blue3" onclick="Colorblue3(); Hidden()"> </div>
+
+    </div>
+    <img src="" id="Iimg" draggable="false">
+
+</body>
+<script src="/static/game.js"></script>
+
+</html>
