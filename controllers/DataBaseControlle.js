@@ -8,29 +8,83 @@ var connection = mysql.createConnection({
     port: "3306"
 });
 
-module.exports = connection
-    // async function searchBase(user, password) {
-    //     const sql = `SELECT * from \`users\` WHERE login = \"${user}\" and pasworld=\"${password}\"; `
 
+class DataBaseControlle {
 
-//     connection.query(sql, function(err, results) {
-//         if (err) {
-//             console.log(err);
-//             console.log("false")
+    async register(user, password, sessionId) {
 
-//         } else {
-//             console.log(results)
+        try {
+            var sql = `INSERT INTO \`users\`( \`session\`, \`login\`, \`pasworld\` ) VALUES ('${sessionId}','${user}','${password}')`
+            connection.query(sql, function(err, results) {
+                if (err) { console.log(err); return false } else {
+                    if (results[0] != undefined) return true;
+                    else return false
+                }
+            })
+        } catch (err) {
 
-//             if (results[0] === undefined) {
-//                 console.log("false")
-//             } else {
-//                 console.log("vse zaebis")
-//             }
+            console.log(err)
+            return false
+        }
 
+    }
+    async SessionExit(ses) {
+        try {
+            var sql = `UPDATE \`users\` SET session='0' WHERE  session=\"${ses}\"`
+            connection.query(sql, function(err, results) {
+                if (err) { console.log(err); return false } else {
+                    if (results[0] != undefined) return true;
+                    else return false
+                }
 
-//         }
+            })
+        } catch (err) {
+            console.log(err)
+            return false
+        }
 
-//     });
-// }
+    }
 
-// module.exports = { connection, searchBase }
+    async login(user, password, sessionId) {
+        try {
+            var sql = `SELECT * from \`users\` WHERE login = \"${user}\" and pasworld=\"${password}\"; `
+            connection.query(sql, function(err, results) {
+                if (err) { console.log(err); return false } else {
+                    if (results[0] != undefined) {
+                        sql = `UPDATE \`users\` SET \`session\`='${sessionId}' WHERE id=${results[0].id}`
+                        connection.query(sql, function(err, results) {
+                            if (err) return false
+                        })
+                        return true
+
+                    } else return false
+                }
+
+            })
+        } catch (err) {
+            console.log(err)
+            return false
+        }
+    }
+    async authentication(ses) {
+
+        try {
+            const sql = `SELECT * from \`users\` WHERE session = \"${ses}\"; `
+            connection.query(sql, function(err, results) {
+                if (err) { console.log(err); return false } else {
+                    if (results[0] != undefined) return true;
+                    else return false
+                }
+
+            })
+        } catch (err) {
+            console.log(err)
+            return false
+        }
+    }
+
+}
+
+const controller = new DataBaseControlle()
+
+module.exports = { connection, controller }

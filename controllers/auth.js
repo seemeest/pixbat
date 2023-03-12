@@ -1,9 +1,9 @@
-// const { connection, searchBase } = require('./DataBaseControlle')
+// const { connection, searchBase } = require('./controller')
 const path = require('path')
 const { session } = require("../app");
 const { emit } = require('process');
 
-const { dataBaseControlle } = require(
+const { controller } = require(
     "./DataBaseControlle"
 )
 
@@ -12,7 +12,7 @@ module.exports.login = function(req, res) {
     var user = req.body.user
     var password = req.body.password
     var sessionId = req.session.id
-    if (!dataBaseControlle.login(user, password, sessionId)) {
+    if (!controller.login(user, password, sessionId)) {
         //код ошибки клиенту
         return
     } else {
@@ -29,7 +29,7 @@ module.exports.register = function(req, res) {
     var user = req.body.user
     var password = req.body.password
     var sessionId = req.session.id
-    if (!dataBaseControlle.register(user, password, sessionId)) {
+    if (!controller.register(user, password, sessionId)) {
         //код ошибки клиенту
         return
     }
@@ -43,7 +43,7 @@ module.exports.register = function(req, res) {
 module.exports.exit = function(req, res) {
     if (!req.body) return res.sendStatus(400);
     var ses = req.session.id
-    if (!dataBaseControlle.SessionExit(ses)) {
+    if (!controller.SessionExit(ses)) {
         //код ошибки клиенту
         return
     }

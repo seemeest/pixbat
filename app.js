@@ -10,7 +10,8 @@ const { Server } = require("socket.io");
 const io = new Server(server);
 
 const autthRouts = require('./routes/auth')
-const connection = require("./controllers/DataBaseControlle")
+const { connection } = require("./controllers/DataBaseControlle")
+const connectRouts = require("./routes/connection")
 
 
 var cookieParser = require('cookie-parser')
@@ -18,15 +19,6 @@ var session = require('express-session')
 const bodyParser = require("body-parser")
 app.use(cookieParser())
 
-// app.use(session({
-//     "secret": "sahaLoh",
-//     "key": "_id",
-//     "cookie": {
-//         "path": "/",
-//         "httpOnly": true,
-//         "maxAge": null
-//     }
-// }))
 const sessionMiddleware = session({
     "secret": "sahaLoh",
     "key": "_id",
@@ -43,6 +35,7 @@ app.use(sessionMiddleware)
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(bodyParser.json())
 app.use('/api/auth', autthRouts)
+    // app.use('/', connectRouts)
 
 app.use('/static', express.static(__dirname + '/static'));
 
@@ -67,11 +60,7 @@ app.get('/', function(request, response) {
 
 });
 
-app.get('/register', function(request, response) {
-    request.session.authenticated = true;
-    response.sendFile(path.join(__dirname, 'register.html'));
 
-})
 module.exports = { app, session }
 
 
