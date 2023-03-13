@@ -17,6 +17,8 @@ var session = require('express-session')
 const bodyParser = require("body-parser")
 app.use(cookieParser())
 
+
+
 const sessionMiddleware = session({
     "secret": "sahaLoh",
     "key": "_id",
@@ -67,25 +69,27 @@ app.get('/register', function(request, response) {
 module.exports = { app, session }
 
 
-var mouse = {
-    x: 0,
-    y: 0
-};
-
 
 var p = 0;
 
-var canvas = createCanvas(2600, 1600)
-
-var ctx = canvas.getContext("2d");
-canvas.width = 2600;
-canvas.height = 1600;
+var width = 2600;
+var height = 1600;
 var gridSize = 10
-loadImage('save.png').then((image) => {
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
 
-    console.log("load")
-})
+var mapY = height / gridSize
+var mapX = width / gridSize
+
+var map = new Array(mapY)
+for (var i = 0; i < map.length; i++) {
+    map[i] = new Array(mapX)
+}
+
+for (var i = 0; i < mapY; i++)
+    for (var j = 0; j < mapX; j++)
+        map[i][j] = 0
+
+
+
 
 var pizic = 0.5
 
@@ -104,6 +108,7 @@ io.use((socket, next) => {
 
 io.on("connection", (socket) => {
 
+
     console.log(socket.request.session.id);
 
     socket.on('login', function() {
@@ -111,7 +116,7 @@ io.on("connection", (socket) => {
         io.sockets.emit('background', canvas.toDataURL());
     })
 
-    socket.on('new player',  function() {
+    socket.on('new player', function() {
         sql = `SELECT * from \`users\` WHERE session = \"${socket.request.session.id}\"; `
         connection.query(sql, function(err, results) {
             if (err) {
@@ -135,11 +140,11 @@ io.on("connection", (socket) => {
         })
 
 
-        io.sockets.emit('state', user, canvas.toDataURL());
+        io.sockets.emit('state', canvas.width, canvas.height, gridSize, map);
     });
 
     // user[socket.id].request.headers.cookie
-    socket.on('ckick',  function(i, j, c) {
+    socket.on('ckick', function(i, j, c) {
 
 
         try {
@@ -158,8 +163,12 @@ io.on("connection", (socket) => {
         // console.log("ckick", socket.handshake.address)
         i = Math.floor(i / gridSize)
         j = Math.floor(j / gridSize)
-        drawCanvas(i, j, c)
-        io.sockets.emit('edit', canvas.toDataURL());
+        try {
+            map[i][j] = c
+        } catch (err) {
+            console.log(err)
+        }
+        io.sockets.emit('edit', i, j, c);
 
     })
 
@@ -168,172 +177,172 @@ io.on("connection", (socket) => {
     })
 });
 
-async function drawCanvas(i, j, c) {
+// async function drawCanvas(i, j, c) {
 
-    switch (c) {
-
-
-        case 0:
-            ctx.fillStyle = '#FFFFFF';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-
-        case 1:
-            ctx.fillStyle = '#C2C2C2';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 2:
-            ctx.fillStyle = '#858585';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 3:
-            ctx.fillStyle = '#474747';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 4:
-            ctx.fillStyle = '#000000';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 5:
-            ctx.fillStyle = '#94DF44';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 6:
-            ctx.fillStyle = '#4BB34B';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 7:
-            ctx.fillStyle = '#006600';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 8:
-            ctx.fillStyle = '#FDCA5E';
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 9:
-            ctx.fillStyle = '#EA621F';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 10:
-            ctx.fillStyle = '#F18E1C';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 11:
-            ctx.fillStyle = '#FF6C6C';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 12:
-            ctx.fillStyle = '#FF2121';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 13:
-            ctx.fillStyle = '#D32121';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 14:
-            ctx.fillStyle = '#CD3EE6';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 15:
-            ctx.fillStyle = '#A329B8';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 16:
-            ctx.fillStyle = '#A1F0FF';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 17:
-            ctx.fillStyle = '#00C9FF';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-            break
-        case 18:
-            ctx.fillStyle = '#0080FF';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-
-        case 19:
-            ctx.fillStyle = '#C1334B';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-
-        case 20:
-            ctx.fillStyle = '#E095A9';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
-        case 21:
-            ctx.fillStyle = '#FFF2EC';
-
-            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
-
-            break
+//     switch (c) {
 
 
+//         case 0:
+//             ctx.fillStyle = '#FFFFFF';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+
+//         case 1:
+//             ctx.fillStyle = '#C2C2C2';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 2:
+//             ctx.fillStyle = '#858585';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 3:
+//             ctx.fillStyle = '#474747';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 4:
+//             ctx.fillStyle = '#000000';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 5:
+//             ctx.fillStyle = '#94DF44';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 6:
+//             ctx.fillStyle = '#4BB34B';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 7:
+//             ctx.fillStyle = '#006600';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 8:
+//             ctx.fillStyle = '#FDCA5E';
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 9:
+//             ctx.fillStyle = '#EA621F';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 10:
+//             ctx.fillStyle = '#F18E1C';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 11:
+//             ctx.fillStyle = '#FF6C6C';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 12:
+//             ctx.fillStyle = '#FF2121';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 13:
+//             ctx.fillStyle = '#D32121';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 14:
+//             ctx.fillStyle = '#CD3EE6';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 15:
+//             ctx.fillStyle = '#A329B8';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 16:
+//             ctx.fillStyle = '#A1F0FF';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 17:
+//             ctx.fillStyle = '#00C9FF';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+//             break
+//         case 18:
+//             ctx.fillStyle = '#0080FF';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+
+//         case 19:
+//             ctx.fillStyle = '#C1334B';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+
+//         case 20:
+//             ctx.fillStyle = '#E095A9';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
+//         case 21:
+//             ctx.fillStyle = '#FFF2EC';
+
+//             ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+//             break
 
 
-    }
-}
 
 
-async function drawBoard() {
-    for (var x = 0; x <= canvas.width; x += gridSize) {
-        ctx.moveTo(pizic + x + p, p);
-        ctx.lineTo(pizic + x + p, canvas.height + p);
+//     }
+// }
 
-    }
 
-    for (var x = 0; x <= canvas.height; x += gridSize) {
-        ctx.moveTo(p, pizic + x + p);
-        ctx.lineTo(canvas.width + p, pizic + x + p);
+// async function drawBoard() {
+//     for (var x = 0; x <= canvas.width; x += gridSize) {
+//         ctx.moveTo(pizic + x + p, p);
+//         ctx.lineTo(pizic + x + p, canvas.height + p);
 
-    }
+//     }
 
-    ctx.lineWidth = 1;
-    ctx.strokeStyle = "#625C5C";
-    ctx.stroke();
-    // console.log(canvas.loadFromJSON(yourJSONString))
-    console.log(canvas.toBuffer())
-}
-// drawBoard();
+//     for (var x = 0; x <= canvas.height; x += gridSize) {
+//         ctx.moveTo(p, pizic + x + p);
+//         ctx.lineTo(canvas.width + p, pizic + x + p);
+
+//     }
+
+//     ctx.lineWidth = 1;
+//     ctx.strokeStyle = "#625C5C";
+//     ctx.stroke();
+//     // console.log(canvas.loadFromJSON(yourJSONString))
+//     console.log(canvas.toBuffer())
+// }
+// // drawBoard();
 
 const PORT = process.env.PORT || 5000
 
