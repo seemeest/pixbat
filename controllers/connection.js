@@ -6,7 +6,7 @@ const { controller } = require(
     "./DataBaseControlle"
 )
 
-module.exports.connect = function(req, res) {
+module.exports.connect = async function(req, res) {
     var ses = req.session.id
     if (!controller.authentication(ses)) res.sendFile(path.join(__dirname, 'login.html'));
     else res.sendFile(path.join(__dirname, "../index.html"));

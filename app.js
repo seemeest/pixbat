@@ -36,10 +36,11 @@ app.use('/api/auth', autthRouts)
     // app.use('/', connectRouts)
 
 app.use('/static', express.static(__dirname + '/static'));
-
+var valueconnext = 1;
 app.get('/', function(request, response) {
+    valueconnext++;
     request.session.authenticated = true;
-
+    console.log(valueconnext.toString(), request.session.id)
     const sql = `SELECT * from \`users\` WHERE session = \"${request.session.id}\"; `
     connection.query(sql, function(err, results) {
         if (err) {
@@ -58,6 +59,10 @@ app.get('/', function(request, response) {
 
 });
 
+app.get('/register', function(request, response) {
+    response.sendFile(path.join(__dirname, 'register.html'));
+
+});
 
 module.exports = { app, session }
 
@@ -71,10 +76,16 @@ var mouse = {
 var p = 0;
 
 var canvas = createCanvas(2600, 1600)
+
 var ctx = canvas.getContext("2d");
 canvas.width = 2600;
 canvas.height = 1600;
 var gridSize = 10
+loadImage('save.png').then((image) => {
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height)
+
+    console.log("load")
+})
 
 var pizic = 0.5
 
@@ -100,7 +111,7 @@ io.on("connection", (socket) => {
         io.sockets.emit('background', canvas.toDataURL());
     })
 
-    socket.on('new player', function() {
+    socket.on('new player',  function() {
         sql = `SELECT * from \`users\` WHERE session = \"${socket.request.session.id}\"; `
         connection.query(sql, function(err, results) {
             if (err) {
@@ -128,13 +139,23 @@ io.on("connection", (socket) => {
     });
 
     // user[socket.id].request.headers.cookie
-    socket.on('ckick', function(i, j, c) {
-        user[socket.id].setPixels++;
-        sql = `UPDATE \`users\` SET \`setPixels\`='${user[socket.id].setPixels}' WHERE id=${user[socket.id].id}`
-        connection.query(sql, function(err, results) {
+    socket.on('ckick',  function(i, j, c) {
 
-        })
-        console.log("ckick", socket.handshake.address)
+
+        try {
+            sql = `UPDATE \`users\` SET \`setPixels\`='${user[socket.id].setPixels}' WHERE id=${user[socket.id].id}`
+            user[socket.id].setPixels++;
+            connection.query(sql, function(err, results) {
+
+            })
+        } catch (err) {
+            console.log(err)
+            console.log(user[socket.id].id)
+        }
+
+
+
+        // console.log("ckick", socket.handshake.address)
         i = Math.floor(i / gridSize)
         j = Math.floor(j / gridSize)
         drawCanvas(i, j, c)
@@ -147,7 +168,7 @@ io.on("connection", (socket) => {
     })
 });
 
-function drawCanvas(i, j, c) {
+async function drawCanvas(i, j, c) {
 
     switch (c) {
 
@@ -266,12 +287,34 @@ function drawCanvas(i, j, c) {
 
             break
 
+        case 19:
+            ctx.fillStyle = '#C1334B';
+
+            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+            break
+
+        case 20:
+            ctx.fillStyle = '#E095A9';
+
+            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+            break
+        case 21:
+            ctx.fillStyle = '#FFF2EC';
+
+            ctx.fillRect((i * gridSize) + 1, (j * gridSize) + 1, gridSize - 1, gridSize - 1);
+
+            break
+
+
+
 
     }
 }
 
 
-function drawBoard() {
+async function drawBoard() {
     for (var x = 0; x <= canvas.width; x += gridSize) {
         ctx.moveTo(pizic + x + p, p);
         ctx.lineTo(pizic + x + p, canvas.height + p);
@@ -287,9 +330,11 @@ function drawBoard() {
     ctx.lineWidth = 1;
     ctx.strokeStyle = "#625C5C";
     ctx.stroke();
+    // console.log(canvas.loadFromJSON(yourJSONString))
+    console.log(canvas.toBuffer())
 }
-drawBoard();
+// drawBoard();
 
 const PORT = process.env.PORT || 5000
 
-server.listen(PORT, "192.168.1.130", () => console.log(`server start ${PORT}`))
+server.listen(PORT, () => console.log(`server start ${PORT}`))

@@ -45,6 +45,8 @@ function Hidden() { document.getElementById("colors").style.visibility = "hidden
 
 function Colorwhite() { color = 0 }
 
+function Colorwhite1() { color = 21 }
+
 function Colorgrey1() { color = 1 }
 
 function Colorgrey2() { color = 2 }
@@ -70,6 +72,10 @@ function Colorred1() { color = 11 }
 function Colorred2() { color = 12 }
 
 function Colorred3() { color = 13 }
+
+function Colorred4() { color = 19 }
+
+function Colorred5() { color = 20 }
 
 function Colorviolet1() { color = 14 }
 
